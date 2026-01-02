@@ -135,6 +135,25 @@
                 .icon {
                     font-size: 48px;
                 }
+
+                .toggle-form {
+                    display: inline-block;
+                }
+
+                .toggle-btn {
+                    background-color: #ffc107;
+                    color: #000;
+                    padding: 12px 30px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+
+                .toggle-btn:hover {
+                    background-color: #e0a800;
+                }
             </style>
         </head>
 
@@ -166,6 +185,33 @@
 
                 <div class="actions">
                     <div class="action-card">
+                        <div class="icon">�</div>
+                        <h3>Toggle Availability</h3>
+                        <p>Current Status:
+                            <c:choose>
+                                <c:when test="${driver.available}">
+                                    <strong style="color: #28a745;">Available</strong>
+                                </c:when>
+                                <c:otherwise>
+                                    <strong style="color: #dc3545;">Unavailable</strong>
+                                </c:otherwise>
+                            </c:choose>
+                        </p>
+                        <form action="/auth/driver-toggle-availability" method="post" class="toggle-form">
+                            <button type="submit" class="toggle-btn">
+                                <c:choose>
+                                    <c:when test="${driver.available}">
+                                        Mark as Unavailable
+                                    </c:when>
+                                    <c:otherwise>
+                                        Mark as Available
+                                    </c:otherwise>
+                                </c:choose>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="action-card">
                         <div class="icon">📋</div>
                         <h3>Pending Requests</h3>
                         <p>View and accept ride requests</p>
@@ -177,21 +223,16 @@
                         <h3>Active Ride</h3>
                         <p>Manage your current ride</p>
                         <a href="/view/rides/active-ride?driverId=${driver.id}" class="action-btn">View Active Ride</a>
-                        <div class="action-card">
-                            <div class="icon">🔄</div>
-                            <h3>Toggle Availability</h3>
-                            <p>Update your availability status</p>
-                            <a href="/drivers/list" class="action-btn">Manage Status</a>
-                        </div>
+                    </div>
 
-                        <div class="action-card">
-                            <div class="icon">⚙️</div>
-                            <h3>Profile Settings</h3>
-                            <p>Update your profile information</p>
-                            <a href="/drivers/add" class="action-btn">Edit Profile</a>
-                        </div>
+                    <div class="action-card">
+                        <div class="icon">⚙️</div>
+                        <h3>Profile Settings</h3>
+                        <p>Update your profile information</p>
+                        <a href="/drivers/add" class="action-btn">Edit Profile</a>
                     </div>
                 </div>
+            </div>
         </body>
 
         </html>

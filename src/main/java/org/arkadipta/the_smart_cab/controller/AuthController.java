@@ -65,9 +65,11 @@ public class AuthController {
 
     @GetMapping("/user-dashboard")
     public String userDashboard(HttpSession session, Model model) {
+        // Session guard - check role
+        String role = (String) session.getAttribute("role");
         User user = (User) session.getAttribute("loggedUser");
 
-        if (user == null) {
+        if (user == null || role == null || !role.equals("USER")) {
             return "redirect:/auth/login";
         }
 
@@ -77,9 +79,11 @@ public class AuthController {
 
     @GetMapping("/driver-dashboard")
     public String driverDashboard(HttpSession session, Model model) {
+        // Session guard - check role
+        String role = (String) session.getAttribute("role");
         Driver driver = (Driver) session.getAttribute("loggedDriver");
 
-        if (driver == null) {
+        if (driver == null || role == null || !role.equals("DRIVER")) {
             return "redirect:/auth/login";
         }
 
@@ -91,5 +95,24 @@ public class AuthController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/auth/login";
+    }
+
+    @PostMapping("/driver-toggle-availability")
+    public String toggleDriverAvailability(HttpSession session) {
+        // Session guard - check role
+        String role = (String) session.getAttribute("role");
+        Driver driver = (Driver) session.getAttribute("loggedDriver");
+
+        if (driver == null || role == null || !role.equals("DRIVER")) {
+            return "redirect:/auth/login";
+        }
+
+        // Toggle availability
+        Driver updatedDriver = driverService.updateAvailability(driver.getId(), !driver.getAvailable());
+
+        // Update session with new driver data
+        session.setAttribute("loggedDriver", updatedDriver);
+
+        return "redirect:/auth/driver-dashboard";
     }
 }
