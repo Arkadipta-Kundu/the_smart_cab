@@ -90,6 +90,7 @@
                         <th>Name</th>
                         <th>Phone</th>
                         <th>Vehicle Number</th>
+                        <th>Location</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -101,6 +102,12 @@
                             <td>${driver.name}</td>
                             <td>${driver.phone}</td>
                             <td>${driver.vehicleNumber}</td>
+                            <td>
+                                ${driver.currentLocation}
+                                <c:if test="${driver.currentLocationCode != null}">
+                                    <br><small>(Code: ${driver.currentLocationCode})</small>
+                                </c:if>
+                            </td>
                             <td>
                                 <c:choose>
                                     <c:when test="${driver.available}">

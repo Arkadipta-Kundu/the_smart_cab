@@ -2,6 +2,7 @@ package org.arkadipta.the_smart_cab.controller.view;
 
 import org.arkadipta.the_smart_cab.entity.Driver;
 import org.arkadipta.the_smart_cab.service.DriverService;
+import org.arkadipta.the_smart_cab.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +15,14 @@ public class DriverViewController {
     @Autowired
     private DriverService driverService;
 
+    @Autowired
+    private LocationService locationService;
+
     // Show add driver form
     @GetMapping("/new")
     public String showAddDriverForm(Model model) {
         model.addAttribute("driver", new Driver());
+        model.addAttribute("locations", locationService.getAllLocations());
         return "driver/add-driver";
     }
 

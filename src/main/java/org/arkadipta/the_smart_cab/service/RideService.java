@@ -90,7 +90,7 @@ public class RideService {
         return rideRepository.save(ride);
     }
 
-    // STEP 2: Assign Driver (SIMPLE LOGIC)
+    // STEP 2: Assign Driver (LOCATION-BASED MATCHING)
     public Ride assignDriver(Long rideId) {
         // Get the ride
         Ride ride = rideRepository.findById(rideId)
@@ -101,24 +101,39 @@ public class RideService {
             throw new InvalidRideStatusException(rideId, ride.getStatus(), "REQUESTED");
         }
 
-        // Find first available driver
+        // Get pickup location code from ride
+        Integer pickupCode = ride.getPickupLocationCode();
+        if (pickupCode == null) {
+            throw new RuntimeException("Ride does not have pickup location code");
+        }
+
+        // Find all available drivers
         List<Driver> availableDrivers = driverRepository.findAll().stream()
                 .filter(driver -> driver.getAvailable() != null && driver.getAvailable())
+                .filter(driver -> driver.getCurrentLocationCode() != null)
                 .toList();
 
         if (availableDrivers.isEmpty()) {
             throw new DriverNotAvailableException();
         }
 
-        Driver driver = availableDrivers.get(0); // Get first available driver
+        // Find nearest driver by comparing location codes
+        // Distance = abs(driverLocationCode - pickupLocationCode)
+        Driver nearestDriver = availableDrivers.stream()
+                .min((d1, d2) -> {
+                    int distance1 = Math.abs(d1.getCurrentLocationCode() - pickupCode);
+                    int distance2 = Math.abs(d2.getCurrentLocationCode() - pickupCode);
+                    return Integer.compare(distance1, distance2);
+                })
+                .orElseThrow(() -> new DriverNotAvailableException());
 
-        // Assign driver to ride
-        ride.setDriverId(driver.getId());
+        // Assign nearest driver to ride
+        ride.setDriverId(nearestDriver.getId());
         ride.setStatus(RideStatus.ASSIGNED);
 
         // Mark driver as unavailable
-        driver.setAvailable(false);
-        driverRepository.save(driver);
+        nearestDriver.setAvailable(false);
+        driverRepository.save(nearestDriver);
 
         return rideRepository.save(ride);
     }

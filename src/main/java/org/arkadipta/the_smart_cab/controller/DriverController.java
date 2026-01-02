@@ -42,4 +42,12 @@ public class DriverController {
         Driver updatedDriver = driverService.updateAvailability(id, available);
         return ResponseEntity.ok(updatedDriver);
     }
+
+    // PUT /drivers/{id}/location - Update driver current location
+    @PutMapping("/{id}/location")
+    public ResponseEntity<Driver> updateLocation(@PathVariable Long id,
+            @RequestParam Integer locationCode) {
+        Driver driver = driverService.updateDriverLocation(id, locationCode);
+        return ResponseEntity.ok(driver);
+    }
 }

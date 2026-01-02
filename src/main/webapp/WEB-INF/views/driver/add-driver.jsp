@@ -97,8 +97,20 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="currentLocation">Current Location:</label>
-                    <input type="text" id="currentLocation" name="currentLocation" required>
+                    <label for="currentLocation">Current Location (Name):</label>
+                    <input type="text" id="currentLocation" name="currentLocation" placeholder="e.g., Downtown"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentLocationCode">Current Location Code:</label>
+                    <select id="currentLocationCode" name="currentLocationCode" required>
+                        <option value="">-- Select Location --</option>
+                        <c:forEach items="${locations}" var="location">
+                            <option value="${location.locationCode}">${location.name} (Code: ${location.locationCode})
+                            </option>
+                        </c:forEach>
+                    </select>
                 </div>
 
                 <button type="submit">Register Driver</button>

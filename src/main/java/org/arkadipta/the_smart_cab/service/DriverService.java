@@ -1,6 +1,7 @@
 package org.arkadipta.the_smart_cab.service;
 
 import org.arkadipta.the_smart_cab.entity.Driver;
+import org.arkadipta.the_smart_cab.entity.Location;
 import org.arkadipta.the_smart_cab.exception.DriverNotFoundException;
 import org.arkadipta.the_smart_cab.repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class DriverService {
 
     @Autowired
     private DriverRepository driverRepository;
+
+    @Autowired
+    private LocationService locationService;
 
     // Register a new driver
     public Driver registerDriver(Driver driver) {
@@ -44,5 +48,19 @@ public class DriverService {
     // Find driver by phone and password for authentication
     public Optional<Driver> findByPhoneAndPassword(String phone, String password) {
         return driverRepository.findByPhoneAndPassword(phone, password);
+    }
+
+    // Update driver location
+    public Driver updateDriverLocation(Long id, Integer locationCode) {
+        Driver driver = driverRepository.findById(id)
+                .orElseThrow(() -> new DriverNotFoundException(id));
+
+        // Get location name from code
+        Location location = locationService.getLocationByCode(locationCode);
+
+        driver.setCurrentLocationCode(locationCode);
+        driver.setCurrentLocation(location.getName());
+
+        return driverRepository.save(driver);
     }
 }

@@ -28,5 +28,7 @@ public class Driver {
 
     private String currentLocation;
 
+    private Integer currentLocationCode;
+
     private String role = "DRIVER";
 }
