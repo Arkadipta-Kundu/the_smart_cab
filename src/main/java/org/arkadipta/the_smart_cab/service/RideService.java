@@ -36,12 +36,12 @@ public class RideService {
     }
 
     // NEW fare calculation using location codes and distance
-    // Formula: fare = 50 + (distance * 10)
+    // Formula: fare = 50 + (distance * 12)
     // Where distance = abs(pickupCode - dropCode) * 5 km
     private Double calculateFareByLocationCode(Integer pickupCode, Integer dropCode) {
         double distance = locationService.calculateDistance(pickupCode, dropCode);
         double baseFare = 50.0;
-        double perKmRate = 10.0;
+        double perKmRate = 12.0;
         return baseFare + (distance * perKmRate);
     }
 

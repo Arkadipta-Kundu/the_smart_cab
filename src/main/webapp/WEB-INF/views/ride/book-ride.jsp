@@ -85,7 +85,7 @@
             <h2>Book a Ride</h2>
 
             <div class="info">
-                💡 Fare is calculated automatically: Base ₹50 + (distance × ₹10)<br>
+                💡 Fare is calculated automatically: Base ₹50 + (distance × ₹12)<br>
                 📏 Distance = abs(pickupCode - dropCode) × 5 km
             </div>
 
