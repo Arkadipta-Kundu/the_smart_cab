@@ -1,0 +1,484 @@
+{
+  "info": {
+    "_postman_id": "smart-cab-service-2026",
+    "name": "Smart Cab Service API",
+    "description": "Complete REST API collection for Smart Cab Service - A Spring Boot MVC Application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Module",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"phone\": \"1234567890\",\n    \"email\": \"john@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["users"]
+            },
+            "description": "Register a new user (customer) in the system"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["users"]
+            },
+            "description": "Retrieve list of all registered users"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["users", "1"]
+            },
+            "description": "Retrieve a specific user by their ID"
+          },
+          "response": []
+        }
+      ],
+      "description": "APIs for managing users (customers)"
+    },
+    {
+      "name": "Driver Module",
+      "item": [
+        {
+          "name": "Register Driver",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Mike Wilson\",\n    \"phone\": \"1112223333\",\n    \"vehicleNumber\": \"DL-01-AB-1234\",\n    \"available\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/drivers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["drivers"]
+            },
+            "description": "Register a new driver in the system"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Drivers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/drivers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["drivers"]
+            },
+            "description": "Retrieve list of all registered drivers"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Drivers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/drivers?available=true",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["drivers"],
+              "query": [
+                {
+                  "key": "available",
+                  "value": "true",
+                  "description": "Filter to show only available drivers"
+                }
+              ]
+            },
+            "description": "Retrieve list of only available drivers"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Driver Availability",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/drivers/1/availability?available=false",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["drivers", "1", "availability"],
+              "query": [
+                {
+                  "key": "available",
+                  "value": "false",
+                  "description": "Set to true or false"
+                }
+              ]
+            },
+            "description": "Update driver's availability status (true = available, false = busy)"
+          },
+          "response": []
+        }
+      ],
+      "description": "APIs for managing drivers and their availability"
+    },
+    {
+      "name": "Ride Module",
+      "item": [
+        {
+          "name": "Book Ride",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 1,\n    \"pickupLocation\": \"Downtown\",\n    \"dropLocation\": \"Airport\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/rides",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides"]
+            },
+            "description": "Book a new ride. Fare is calculated automatically based on: Base ₹50 + (pickup.length + drop.length) × ₹5"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Rides",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides"]
+            },
+            "description": "Retrieve list of all rides"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ride By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "1"]
+            },
+            "description": "Retrieve a specific ride by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Driver to Ride",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/1/assign",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "1", "assign"]
+            },
+            "description": "Assign first available driver to the ride. Changes ride status to ASSIGNED and marks driver as unavailable."
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Ride",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/1/complete",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "1", "complete"]
+            },
+            "description": "Complete the ride. Changes ride status to COMPLETED and marks driver as available again."
+          },
+          "response": []
+        }
+      ],
+      "description": "APIs for managing rides - core business logic"
+    },
+    {
+      "name": "Complete Flow Example",
+      "item": [
+        {
+          "name": "1. Register User - John",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"phone\": \"1234567890\",\n    \"email\": \"john@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Register Driver - Mike",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Mike Wilson\",\n    \"phone\": \"1112223333\",\n    \"vehicleNumber\": \"DL-01-AB-1234\",\n    \"available\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/drivers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["drivers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Book Ride",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 1,\n    \"pickupLocation\": \"Downtown\",\n    \"dropLocation\": \"Airport\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/rides",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Assign Driver",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/1/assign",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "1", "assign"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Complete Ride",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/1/complete",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "1", "complete"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Run these requests in sequence to see complete ride lifecycle"
+    },
+    {
+      "name": "Error Scenarios",
+      "item": [
+        {
+          "name": "User Not Found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/users/999",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["users", "999"]
+            },
+            "description": "Test 404 error - User not found"
+          },
+          "response": []
+        },
+        {
+          "name": "Driver Not Found",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/drivers/999/availability?available=true",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["drivers", "999", "availability"],
+              "query": [
+                {
+                  "key": "available",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Test 404 error - Driver not found"
+          },
+          "response": []
+        },
+        {
+          "name": "Ride Not Found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/999",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "999"]
+            },
+            "description": "Test 404 error - Ride not found"
+          },
+          "response": []
+        },
+        {
+          "name": "No Available Drivers",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/1/assign",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "1", "assign"]
+            },
+            "description": "Test 400 error - No available drivers (Mark all drivers unavailable first)"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Ride Status - Already Assigned",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/1/assign",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "1", "assign"]
+            },
+            "description": "Test 400 error - Try to assign driver to already assigned ride"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Ride Status - Already Completed",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/rides/1/complete",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rides", "1", "complete"]
+            },
+            "description": "Test 400 error - Try to complete already completed ride"
+          },
+          "response": []
+        }
+      ],
+      "description": "Test various error scenarios and exception handling"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}

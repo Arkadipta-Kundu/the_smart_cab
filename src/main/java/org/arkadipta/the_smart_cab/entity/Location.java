@@ -6,27 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "drivers")
+@Table(name = "locations")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Driver {
+public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String name; // e.g., "Area A", "Downtown", "Airport"
 
-    private String phone;
-
-    private String vehicleNumber;
-
-    private Boolean available;
-
-    private String password;
-
-    private String currentLocation;
-
-    private String role = "DRIVER";
+    @Column(unique = true)
+    private Integer locationCode; // e.g., 1, 2, 3, 4, 5
 }
