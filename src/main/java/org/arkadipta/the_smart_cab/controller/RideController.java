@@ -37,10 +37,38 @@ public class RideController {
         return ResponseEntity.ok(ride);
     }
 
-    // STEP 3: PUT /rides/{rideId}/complete - Complete ride
+    // STEP 3: PUT /rides/{rideId}/accept - Driver accepts ride
+    @PutMapping("/{rideId}/accept")
+    public ResponseEntity<Ride> acceptRide(@PathVariable Long rideId, @RequestParam Long driverId) {
+        Ride ride = rideService.acceptRide(rideId, driverId);
+        return ResponseEntity.ok(ride);
+    }
+
+    // STEP 4: PUT /rides/{rideId}/reject - Driver rejects ride
+    @PutMapping("/{rideId}/reject")
+    public ResponseEntity<Ride> rejectRide(@PathVariable Long rideId, @RequestParam Long driverId) {
+        Ride ride = rideService.rejectRide(rideId, driverId);
+        return ResponseEntity.ok(ride);
+    }
+
+    // STEP 5: PUT /rides/{rideId}/start - Driver starts ride
+    @PutMapping("/{rideId}/start")
+    public ResponseEntity<Ride> startRide(@PathVariable Long rideId, @RequestParam Long driverId) {
+        Ride ride = rideService.startRide(rideId, driverId);
+        return ResponseEntity.ok(ride);
+    }
+
+    // STEP 6: PUT /rides/{rideId}/complete - Complete ride
     @PutMapping("/{rideId}/complete")
-    public ResponseEntity<Ride> completeRide(@PathVariable Long rideId) {
-        Ride ride = rideService.completeRide(rideId);
+    public ResponseEntity<Ride> completeRide(@PathVariable Long rideId, @RequestParam Long driverId) {
+        Ride ride = rideService.completeRide(rideId, driverId);
+        return ResponseEntity.ok(ride);
+    }
+
+    // PUT /rides/{rideId}/cancel - Cancel ride
+    @PutMapping("/{rideId}/cancel")
+    public ResponseEntity<Ride> cancelRide(@PathVariable Long rideId, @RequestParam Long userId) {
+        Ride ride = rideService.cancelRide(rideId, userId);
         return ResponseEntity.ok(ride);
     }
 

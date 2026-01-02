@@ -59,10 +59,62 @@ public class RideViewController {
         return "redirect:/view/rides";
     }
 
-    // Complete ride
+    // User: View ride status
+    @GetMapping("/user-status")
+    public String userRideStatus(@RequestParam Long userId, Model model) {
+        model.addAttribute("rides", rideService.getRidesByUserId(userId));
+        model.addAttribute("drivers", driverService.getAllDrivers());
+        return "ride/user-ride-status";
+    }
+
+    // Driver: View pending ride requests
+    @GetMapping("/driver-requests")
+    public String driverRequests(@RequestParam Long driverId, Model model) {
+        model.addAttribute("pendingRides", rideService.getPendingRidesForDriver(driverId));
+        model.addAttribute("users", userService.getAllUsers());
+        return "ride/driver-requests";
+    }
+
+    // Driver: View active ride
+    @GetMapping("/active-ride")
+    public String activeRide(@RequestParam Long driverId, Model model) {
+        model.addAttribute("activeRide", rideService.getActiveRideForDriver(driverId).orElse(null));
+        model.addAttribute("users", userService.getAllUsers());
+        return "ride/active-ride";
+    }
+
+    // Driver: Accept ride
+    @GetMapping("/{id}/accept")
+    public String acceptRide(@PathVariable Long id, @RequestParam Long driverId) {
+        rideService.acceptRide(id, driverId);
+        return "redirect:/view/rides/active-ride?driverId=" + driverId;
+    }
+
+    // Driver: Reject ride
+    @GetMapping("/{id}/reject")
+    public String rejectRide(@PathVariable Long id, @RequestParam Long driverId) {
+        rideService.rejectRide(id, driverId);
+        return "redirect:/view/rides/driver-requests?driverId=" + driverId;
+    }
+
+    // Driver: Start ride
+    @GetMapping("/{id}/start")
+    public String startRide(@PathVariable Long id, @RequestParam Long driverId) {
+        rideService.startRide(id, driverId);
+        return "redirect:/view/rides/active-ride?driverId=" + driverId;
+    }
+
+    // Driver/Admin: Complete ride
     @GetMapping("/{id}/complete")
-    public String completeRide(@PathVariable Long id) {
-        rideService.completeRide(id);
+    public String completeRide(@PathVariable Long id, @RequestParam Long driverId) {
+        rideService.completeRide(id, driverId);
         return "redirect:/view/rides";
+    }
+
+    // User: Cancel ride
+    @GetMapping("/{id}/cancel")
+    public String cancelRide(@PathVariable Long id, @RequestParam Long userId) {
+        rideService.cancelRide(id, userId);
+        return "redirect:/view/rides/user-status?userId=" + userId;
     }
 }

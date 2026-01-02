@@ -167,26 +167,31 @@
                 <div class="actions">
                     <div class="action-card">
                         <div class="icon">📋</div>
-                        <h3>My Rides</h3>
-                        <p>View your assigned rides</p>
-                        <a href="/rides/list" class="action-btn">View Rides</a>
+                        <h3>Pending Requests</h3>
+                        <p>View and accept ride requests</p>
+                        <a href="/view/rides/driver-requests?driverId=${driver.id}" class="action-btn">View Requests</a>
                     </div>
 
                     <div class="action-card">
-                        <div class="icon">🔄</div>
-                        <h3>Toggle Availability</h3>
-                        <p>Update your availability status</p>
-                        <a href="/drivers/list" class="action-btn">Manage Status</a>
-                    </div>
+                        <div class="icon">🚗</div>
+                        <h3>Active Ride</h3>
+                        <p>Manage your current ride</p>
+                        <a href="/view/rides/active-ride?driverId=${driver.id}" class="action-btn">View Active Ride</a>
+                        <div class="action-card">
+                            <div class="icon">🔄</div>
+                            <h3>Toggle Availability</h3>
+                            <p>Update your availability status</p>
+                            <a href="/drivers/list" class="action-btn">Manage Status</a>
+                        </div>
 
-                    <div class="action-card">
-                        <div class="icon">⚙️</div>
-                        <h3>Profile Settings</h3>
-                        <p>Update your profile information</p>
-                        <a href="/drivers/add" class="action-btn">Edit Profile</a>
+                        <div class="action-card">
+                            <div class="icon">⚙️</div>
+                            <h3>Profile Settings</h3>
+                            <p>Update your profile information</p>
+                            <a href="/drivers/add" class="action-btn">Edit Profile</a>
+                        </div>
                     </div>
                 </div>
-            </div>
         </body>
 
         </html>

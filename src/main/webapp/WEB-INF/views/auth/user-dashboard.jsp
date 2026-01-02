@@ -144,11 +144,8 @@
                     <div class="action-card">
                         <div class="icon">📋</div>
                         <h3>My Rides</h3>
-                        <p>View all your ride history</p>
-                        <a href="/rides/list" class="action-btn">View Rides</a>
-                    </div>
-
-                    <div class="action-card">
+                        <p>View all your ride history and status</p>
+                        <a href="/view/rides/user-status?userId=${user.id}" class="action-btn">View Rides</a>
                         <div class="icon">⚙️</div>
                         <h3>Account Settings</h3>
                         <p>Update your profile information</p>

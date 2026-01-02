@@ -129,7 +129,7 @@ public class RideService {
 
         // Assign nearest driver to ride
         ride.setDriverId(nearestDriver.getId());
-        ride.setStatus(RideStatus.ASSIGNED);
+        ride.setStatus(RideStatus.DRIVER_ASSIGNED);
 
         // Mark driver as unavailable
         nearestDriver.setAvailable(false);
@@ -138,21 +138,122 @@ public class RideService {
         return rideRepository.save(ride);
     }
 
-    // STEP 3: Complete Ride
-    public Ride completeRide(Long rideId) {
-        // Get the ride
+    // STEP 3: Driver accepts ride
+    public Ride acceptRide(Long rideId, Long driverId) {
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new RideNotFoundException(rideId));
 
-        // Check if ride is in ASSIGNED status
-        if (ride.getStatus() != RideStatus.ASSIGNED) {
-            throw new InvalidRideStatusException(rideId, ride.getStatus(), "ASSIGNED");
+        // Check if ride is in DRIVER_ASSIGNED status
+        if (ride.getStatus() != RideStatus.DRIVER_ASSIGNED) {
+            throw new InvalidRideStatusException(rideId, ride.getStatus(), "DRIVER_ASSIGNED");
         }
 
-        // Mark ride as completed
+        // Verify it's the assigned driver
+        if (!ride.getDriverId().equals(driverId)) {
+            throw new RuntimeException("Only assigned driver can accept this ride");
+        }
+
+        ride.setStatus(RideStatus.DRIVER_ACCEPTED);
+        return rideRepository.save(ride);
+    }
+
+    // STEP 4: Driver rejects ride - reassign to next driver
+    public Ride rejectRide(Long rideId, Long driverId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RideNotFoundException(rideId));
+
+        // Check if ride is in DRIVER_ASSIGNED status
+        if (ride.getStatus() != RideStatus.DRIVER_ASSIGNED) {
+            throw new InvalidRideStatusException(rideId, ride.getStatus(), "DRIVER_ASSIGNED");
+        }
+
+        // Verify it's the assigned driver
+        if (!ride.getDriverId().equals(driverId)) {
+            throw new RuntimeException("Only assigned driver can reject this ride");
+        }
+
+        // Mark current driver as available again
+        Optional<Driver> driverOptional = driverRepository.findById(driverId);
+        if (driverOptional.isPresent()) {
+            Driver driver = driverOptional.get();
+            driver.setAvailable(true);
+            driverRepository.save(driver);
+        }
+
+        // Reset ride status and try to assign to next driver
+        ride.setDriverId(null);
+        ride.setStatus(RideStatus.REQUESTED);
+        rideRepository.save(ride);
+
+        // Auto-assign to next nearest driver
+        return assignDriver(rideId);
+    }
+
+    // STEP 5: Driver starts the ride
+    public Ride startRide(Long rideId, Long driverId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RideNotFoundException(rideId));
+
+        // Check if ride is in DRIVER_ACCEPTED status
+        if (ride.getStatus() != RideStatus.DRIVER_ACCEPTED) {
+            throw new InvalidRideStatusException(rideId, ride.getStatus(), "DRIVER_ACCEPTED");
+        }
+
+        // Verify it's the assigned driver
+        if (!ride.getDriverId().equals(driverId)) {
+            throw new RuntimeException("Only assigned driver can start this ride");
+        }
+
+        ride.setStatus(RideStatus.STARTED);
+        return rideRepository.save(ride);
+    }
+
+    // STEP 6: Complete Ride
+    public Ride completeRide(Long rideId, Long driverId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RideNotFoundException(rideId));
+
+        // Check if ride is in STARTED status
+        if (ride.getStatus() != RideStatus.STARTED) {
+            throw new InvalidRideStatusException(rideId, ride.getStatus(), "STARTED");
+        }
+
+        // Verify it's the assigned driver
+        if (!ride.getDriverId().equals(driverId)) {
+            throw new RuntimeException("Only assigned driver can complete this ride");
+        }
+
         ride.setStatus(RideStatus.COMPLETED);
 
         // Mark driver as available again
+        Optional<Driver> driverOptional = driverRepository.findById(driverId);
+        if (driverOptional.isPresent()) {
+            Driver driver = driverOptional.get();
+            driver.setAvailable(true);
+            driverRepository.save(driver);
+        }
+
+        return rideRepository.save(ride);
+    }
+
+    // Cancel ride
+    public Ride cancelRide(Long rideId, Long userId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RideNotFoundException(rideId));
+
+        // Only user who booked can cancel
+        if (!ride.getUserId().equals(userId)) {
+            throw new RuntimeException("Only the user who booked can cancel this ride");
+        }
+
+        // Can only cancel if not started
+        if (ride.getStatus() == RideStatus.STARTED || ride.getStatus() == RideStatus.COMPLETED) {
+            throw new RuntimeException("Cannot cancel ride in " + ride.getStatus() + " status");
+        }
+
+        ride.setStatus(RideStatus.CANCELLED);
+
+        // Free the driver if assigned
         if (ride.getDriverId() != null) {
             Optional<Driver> driverOptional = driverRepository.findById(ride.getDriverId());
             if (driverOptional.isPresent()) {
@@ -163,6 +264,39 @@ public class RideService {
         }
 
         return rideRepository.save(ride);
+    }
+
+    // Get rides by user ID
+    public List<Ride> getRidesByUserId(Long userId) {
+        return rideRepository.findAll().stream()
+                .filter(ride -> ride.getUserId().equals(userId))
+                .toList();
+    }
+
+    // Get rides by driver ID
+    public List<Ride> getRidesByDriverId(Long driverId) {
+        return rideRepository.findAll().stream()
+                .filter(ride -> ride.getDriverId() != null && ride.getDriverId().equals(driverId))
+                .toList();
+    }
+
+    // Get pending rides for driver (DRIVER_ASSIGNED status)
+    public List<Ride> getPendingRidesForDriver(Long driverId) {
+        return rideRepository.findAll().stream()
+                .filter(ride -> ride.getDriverId() != null &&
+                        ride.getDriverId().equals(driverId) &&
+                        ride.getStatus() == RideStatus.DRIVER_ASSIGNED)
+                .toList();
+    }
+
+    // Get active ride for driver (DRIVER_ACCEPTED or STARTED)
+    public Optional<Ride> getActiveRideForDriver(Long driverId) {
+        return rideRepository.findAll().stream()
+                .filter(ride -> ride.getDriverId() != null &&
+                        ride.getDriverId().equals(driverId) &&
+                        (ride.getStatus() == RideStatus.DRIVER_ACCEPTED ||
+                                ride.getStatus() == RideStatus.STARTED))
+                .findFirst();
     }
 
     // Get all rides
